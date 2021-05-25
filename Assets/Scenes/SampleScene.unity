@@ -1109,7 +1109,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 256429044}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2133221e7b9fadd4fbba101c45d17811, type: 3}
+  m_Script: {fileID: 11500000, guid: 630509c3d05844e4695ef81c5080c8c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   aspects: {fileID: 11400000, guid: 59f49168faf725441950e30e0c8d703f, type: 2}
@@ -1494,7 +1494,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 386960486}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2133221e7b9fadd4fbba101c45d17811, type: 3}
+  m_Script: {fileID: 11500000, guid: 630509c3d05844e4695ef81c5080c8c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   aspects: {fileID: 11400000, guid: 5e6da05f0adc1f24a8b481ed8a80bd1b, type: 2}
@@ -1699,7 +1699,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 429597383}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2133221e7b9fadd4fbba101c45d17811, type: 3}
+  m_Script: {fileID: 11500000, guid: 630509c3d05844e4695ef81c5080c8c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   aspects: {fileID: 11400000, guid: f2f42500911eb2e4d86bffb1974def16, type: 2}
@@ -2251,10 +2251,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 718578381}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37c5eb2b09fcc7746bbf9f14bbb354af, type: 3}
+  m_Script: {fileID: 11500000, guid: cf8af7c80638fc64596b0d997cd96738, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefix: /
+  prefix: 
   commands: []
   UICanvas: {fileID: 1789150441}
   inputField: {fileID: 252429780}
@@ -2742,7 +2742,6 @@ GameObject:
   - component: {fileID: 1094576537}
   - component: {fileID: 1094576541}
   - component: {fileID: 1094576536}
-  - component: {fileID: 1094576535}
   - component: {fileID: 1094576542}
   m_Layer: 0
   m_Name: Player
@@ -2751,18 +2750,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1094576535
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1094576534}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b06d4969779d264ba963ee9a40f4526, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1094576536
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2789,21 +2776,19 @@ MonoBehaviour:
   health: 100
   mutator:
     affectedGenes: []
-  mutationRate: 1
-  damageRate: 0.5
+  mutationRate: 5
+  damageRate: 2
   envDamage: 0.1
   mutationLock: 0
   damageLock: 0
   genes:
-    debugGenes: []
-  equipment:
-    head: {fileID: 0}
-    body: {fileID: 0}
-    pants: {fileID: 0}
-    weapon: {fileID: 0}
-    armor: {fileID: 0}
-    runes: []
-  playerBox: {fileID: 0}
+    genes:
+      list:
+      - value1: 0
+      - value1: 1
+      - value1: 2
+  equipment: {fileID: 0}
+  playerBox: {fileID: 1604358273}
   envBox: {fileID: 0}
   prefabTextObj: {fileID: 1025161752879154682, guid: 8c88adbc20350e64eb7d93609c6164d9,
     type: 3}
@@ -3851,11 +3836,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1353578338}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62b795eb5992c12488c38bf0524c66a4, type: 3}
+  m_Script: {fileID: 11500000, guid: 4cf606545eed578449a0fde0f66dd9d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugControllers: []
-  chunkSize: 50
+  controllers:
+    list: []
 --- !u!114 &1353578343
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5200,7 +5185,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1824702791}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2133221e7b9fadd4fbba101c45d17811, type: 3}
+  m_Script: {fileID: 11500000, guid: 630509c3d05844e4695ef81c5080c8c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   aspects: {fileID: 11400000, guid: 9c38baa64467a6947b6dbb256f239216, type: 2}
@@ -5329,15 +5314,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1854544984}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76f4a4bf7f9df7d4f982a609ab57ea33, type: 3}
+  m_Script: {fileID: 11500000, guid: cee48c4081b33c24f9f5308c06a9e2f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1094576540}
   speed: 10
   distToTarget: 4
   minPitch: -15
-  maxPitch: 30
-  cameraOffset: {x: 0.65, y: 1, z: 0}
+  maxPitch: 45
+  cameraOffset: {x: 0.5, y: 1, z: 0}
 --- !u!1 &1892093999
 GameObject:
   m_ObjectHideFlags: 0
