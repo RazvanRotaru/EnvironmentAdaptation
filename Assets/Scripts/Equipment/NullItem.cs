@@ -2,6 +2,7 @@
 
 namespace GeneticAlgorithmForSpecies.Equipment
 {
+    [System.Serializable]
     class NullItem : IItem
     {
         private static NullItem _instance;

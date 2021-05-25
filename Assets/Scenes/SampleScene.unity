@@ -2742,7 +2742,9 @@ GameObject:
   - component: {fileID: 1094576537}
   - component: {fileID: 1094576541}
   - component: {fileID: 1094576536}
+  - component: {fileID: 1094576535}
   - component: {fileID: 1094576542}
+  - component: {fileID: 1094576543}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2750,6 +2752,33 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1094576535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1094576534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a0d3df9d0da4444b83902395be81273, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mutator:
+    affectedGenes: []
+  mutationRate: 10
+  damageRate: 2
+  envDamage: 0.1
+  mutationLock: 0
+  damageLock: 0
+  genes:
+    genes:
+      list:
+      - value1: 0
+      - value1: 1
+      - value1: 2
+  player: {fileID: 0}
+  equipment: {fileID: 0}
 --- !u!114 &1094576536
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2773,26 +2802,8 @@ MonoBehaviour:
   jumpHeight: 2
   groundedThreshold: 0.01
   _isGrounded: 1
-  health: 100
-  mutator:
-    affectedGenes: []
-  mutationRate: 5
-  damageRate: 2
-  envDamage: 0.1
-  mutationLock: 0
-  damageLock: 0
-  genes:
-    genes:
-      list:
-      - value1: 0
-      - value1: 1
-      - value1: 2
-  equipment: {fileID: 0}
-  playerBox: {fileID: 1604358273}
-  envBox: {fileID: 0}
-  prefabTextObj: {fileID: 1025161752879154682, guid: 8c88adbc20350e64eb7d93609c6164d9,
-    type: 3}
   _direction: {x: 0, y: 0}
+  health: 100
 --- !u!136 &1094576537
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2902,6 +2913,19 @@ MonoBehaviour:
   defaultPath: {fileID: 1950339205}
   speed: 2.45
   currPoint: 0
+--- !u!114 &1094576543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1094576534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5a26cc176582ac4ca3a7c07737a9455, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  equipmentContainer: {fileID: 0}
 --- !u!1 &1098648241
 GameObject:
   m_ObjectHideFlags: 0
@@ -3780,6 +3804,7 @@ GameObject:
   - component: {fileID: 1353578339}
   - component: {fileID: 1353578342}
   - component: {fileID: 1353578343}
+  - component: {fileID: 1353578344}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -3957,6 +3982,23 @@ MonoBehaviour:
   m_DefaultActionMap: Gameplay
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 1854544987}
+--- !u!114 &1353578344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1353578338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec74be83b0afb1a4c8f13e3890f852cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerBox: {fileID: 1094576540}
+  envBox: {fileID: 0}
+  prefabTextObj: {fileID: 1025161752879154682, guid: 8c88adbc20350e64eb7d93609c6164d9,
+    type: 3}
+  player: {fileID: 1094576536}
 --- !u!1 &1359805233
 GameObject:
   m_ObjectHideFlags: 0
