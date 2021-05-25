@@ -1,12 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class InventoryManager : MonoBehaviour
-{
+public class InventoryManager : MonoBehaviour {
     public static InventoryManager instance;
-    private void Awake()
-    {
+    private void Awake() {
         if (instance == null)
             instance = this;
     }
@@ -15,15 +12,12 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] int size;
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         // load items from PlayerPrefs
     }
 
-    public bool Add(Item item)
-    {
-        if (items.Count > size)
-        {
+    public bool Add(Item item) {
+        if (items.Count > size) {
             return false;
         }
 
@@ -31,8 +25,7 @@ public class InventoryManager : MonoBehaviour
         return true;
     }
 
-    public void Remove(Item item)
-    {
+    public void Remove(Item item) {
         items.Remove(item);
     }
 }

@@ -1,13 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 [System.Serializable]
 [CreateAssetMenu(fileName = "New Item", menuName = "Inventory/Item", order = 1)]
-public class Item : ScriptableObject
-{
-    public enum ItemType
-    {
+public class Item : ScriptableObject {
+    public enum ItemType {
         Wearable,
         Defensive,
         Offensive,

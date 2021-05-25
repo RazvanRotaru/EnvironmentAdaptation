@@ -1,0 +1,225 @@
+{
+	"name": "ActionInput",
+	"maps": [
+		{
+			"name": "Gameplay",
+			"id": "e855e488-ee76-4115-9dcc-8cb795b1ee4c",
+			"actions": [
+				{
+					"name": "Jump",
+					"type": "Button",
+					"id": "5bde318c-bc22-4574-a44d-202ce1435834",
+					"expectedControlType": "Button",
+					"processors": "",
+					"interactions": ""
+				},
+				{
+					"name": "Movement",
+					"type": "Value",
+					"id": "2766e875-dba2-4f0d-990a-87041108f7b3",
+					"expectedControlType": "Vector2",
+					"processors": "",
+					"interactions": ""
+				},
+				{
+					"name": "Shoot",
+					"type": "Button",
+					"id": "18f2f699-accf-47e4-af61-82c36ff8a828",
+					"expectedControlType": "Button",
+					"processors": "",
+					"interactions": ""
+				}
+			],
+			"bindings": [
+				{
+					"name": "",
+					"id": "dc5c6936-dd7d-4e3b-b943-38a0822d8bb6",
+					"path": "<Keyboard>/space",
+					"interactions": "Press",
+					"processors": "",
+					"groups": "Keyboard&Mouse",
+					"action": "Jump",
+					"isComposite": false,
+					"isPartOfComposite": false
+				},
+				{
+					"name": "",
+					"id": "dbd6d424-2f1d-4afd-bcae-23289118ef34",
+					"path": "<DualShock4GampadiOS>/buttonSouth",
+					"interactions": "Press",
+					"processors": "",
+					"groups": "Gamepad",
+					"action": "Jump",
+					"isComposite": false,
+					"isPartOfComposite": false
+				},
+				{
+					"name": "2D Vector",
+					"id": "dc00cbd7-d4da-4565-a8d5-6b4edef15da4",
+					"path": "2DVector",
+					"interactions": "",
+					"processors": "",
+					"groups": "",
+					"action": "Movement",
+					"isComposite": true,
+					"isPartOfComposite": false
+				},
+				{
+					"name": "up",
+					"id": "7e287ae2-7968-4f17-9662-56fbe98ce732",
+					"path": "<Keyboard>/w",
+					"interactions": "",
+					"processors": "",
+					"groups": "Keyboard&Mouse",
+					"action": "Movement",
+					"isComposite": false,
+					"isPartOfComposite": true
+				},
+				{
+					"name": "down",
+					"id": "6d2f1015-5978-4932-8e7e-00695e0de6e4",
+					"path": "<Keyboard>/s",
+					"interactions": "",
+					"processors": "",
+					"groups": "Keyboard&Mouse",
+					"action": "Movement",
+					"isComposite": false,
+					"isPartOfComposite": true
+				},
+				{
+					"name": "left",
+					"id": "0a6e0f59-3287-4368-832f-2c745d58cbee",
+					"path": "<Keyboard>/a",
+					"interactions": "",
+					"processors": "",
+					"groups": "Keyboard&Mouse",
+					"action": "Movement",
+					"isComposite": false,
+					"isPartOfComposite": true
+				},
+				{
+					"name": "right",
+					"id": "a9a28521-62ef-4d77-a44c-10c2913d9fb9",
+					"path": "<Keyboard>/d",
+					"interactions": "",
+					"processors": "",
+					"groups": "Keyboard&Mouse",
+					"action": "Movement",
+					"isComposite": false,
+					"isPartOfComposite": true
+				},
+				{
+					"name": "2D Vector",
+					"id": "3b3c78da-a6f0-46ac-a406-aa03e19ea33d",
+					"path": "2DVector",
+					"interactions": "",
+					"processors": "",
+					"groups": "",
+					"action": "Movement",
+					"isComposite": true,
+					"isPartOfComposite": false
+				},
+				{
+					"name": "up",
+					"id": "777f23fe-78a3-4e49-bd9a-bc75584d6588",
+					"path": "<Gamepad>/leftStick/up",
+					"interactions": "",
+					"processors": "",
+					"groups": "Gamepad",
+					"action": "Movement",
+					"isComposite": false,
+					"isPartOfComposite": true
+				},
+				{
+					"name": "down",
+					"id": "116db27e-b397-4bc2-858d-f94418401e0f",
+					"path": "<Gamepad>/leftStick/down",
+					"interactions": "",
+					"processors": "",
+					"groups": "Gamepad",
+					"action": "Movement",
+					"isComposite": false,
+					"isPartOfComposite": true
+				},
+				{
+					"name": "left",
+					"id": "32885f1a-600d-4283-b6d2-ab3afee47fb2",
+					"path": "<Gamepad>/leftStick/left",
+					"interactions": "",
+					"processors": "",
+					"groups": "Gamepad",
+					"action": "Movement",
+					"isComposite": false,
+					"isPartOfComposite": true
+				},
+				{
+					"name": "right",
+					"id": "3b4be296-7815-4512-a695-49c48a289ec0",
+					"path": "<Gamepad>/leftStick/right",
+					"interactions": "",
+					"processors": "",
+					"groups": "Gamepad",
+					"action": "Movement",
+					"isComposite": false,
+					"isPartOfComposite": true
+				},
+				{
+					"name": "",
+					"id": "aef8c96f-7d5e-46c1-9445-2a83d5febf6e",
+					"path": "<Mouse>/leftButton",
+					"interactions": "Press",
+					"processors": "",
+					"groups": "Keyboard&Mouse",
+					"action": "Shoot",
+					"isComposite": false,
+					"isPartOfComposite": false
+				},
+				{
+					"name": "",
+					"id": "7c6cd1aa-c49b-4277-a040-47ff05e6e28c",
+					"path": "<DualShockGamepad>/rightTrigger",
+					"interactions": "Press",
+					"processors": "",
+					"groups": "Gamepad",
+					"action": "Shoot",
+					"isComposite": false,
+					"isPartOfComposite": false
+				}
+			]
+		}
+	],
+	"controlSchemes": [
+		{
+			"name": "Keyboard&Mouse",
+			"bindingGroup": "Keyboard&Mouse",
+			"devices": [
+				{
+					"devicePath": "<Keyboard>",
+					"isOptional": false,
+					"isOR": false
+				},
+				{
+					"devicePath": "<Mouse>",
+					"isOptional": false,
+					"isOR": false
+				}
+			]
+		},
+		{
+			"name": "Gamepad",
+			"bindingGroup": "Gamepad",
+			"devices": [
+				{
+					"devicePath": "<Gamepad>",
+					"isOptional": false,
+					"isOR": false
+				}
+			]
+		},
+		{
+			"name": "Mobile",
+			"bindingGroup": "Mobile",
+			"devices": []
+		}
+	]
+}

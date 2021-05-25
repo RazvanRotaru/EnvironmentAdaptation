@@ -1,15 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class EnvironmentType : MonoBehaviour
-{
-    [SerializeField] public EnvironmentAspects aspects;
+public class EnvironmentType : MonoBehaviour {
+    public EnvironmentAspects aspects;
 
-    private void Awake()
-    {
-        foreach (Transform child in transform)
-        {
+    private void Awake() {
+        foreach (Transform child in transform) {
             child.gameObject.AddComponent<EnvironmentController>().SetAsepcts(aspects.list);
         }
     }
