@@ -108,7 +108,6 @@ namespace GeneticAlgorithmForSpecies.Mutation
         }
 
 
-        // TODO move in MutationController
         IEnumerator Mutate(EnvironmentController envController, List<string> affectedGenes)
         {
             mutationLock = true;
@@ -116,7 +115,8 @@ namespace GeneticAlgorithmForSpecies.Mutation
 
             string debugText = "<b>Mutation in progress...</b>\n";
 
-            GeneContainer prevGenes = new GeneContainer(genes);
+            Dictionary<string, Gene> prevGenes = genes.DataColne;
+
 
             equipment.ApplyBuffs(ref genes);
             // mutate to be adapt to current region
@@ -126,7 +126,7 @@ namespace GeneticAlgorithmForSpecies.Mutation
             foreach (KeyValuePair<string, Gene> entry in genes.Data)
             {
                 debugText += "<color=orange>" + entry.Key.ToString() + "</color>\t -> mutated to <color=green>" + entry.Value.ToString()
-                                + "</color> from <color=red>[" + prevGenes.GetGene(entry.Key).ToString() + "</color>\n";
+                                + "</color> from <color=red>[" + prevGenes[entry.Key].ToString() + "</color>\n";
                 //Debug.Log(text);
             }
             Debug.Log(debugText);

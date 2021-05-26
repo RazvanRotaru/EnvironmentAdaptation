@@ -10,6 +10,7 @@ namespace GeneticAlgorithmForSpecies.Genes
         [SerializeField] private ValueContainer<Gene.Type, Gene> genes;
 
         public Dictionary<string, Gene> Data { get => genes.Data; }
+        public Dictionary<string, Gene> DataColne { get => CloneData(); }
 
         public Gene this[string key] { get => GetGene(key); /*set => SetValue(key, value);*/ }
         
@@ -32,6 +33,18 @@ namespace GeneticAlgorithmForSpecies.Genes
         {
             Gene.Type type = (Gene.Type) System.Enum.Parse(typeof(Gene.Type), name);
             return genes[type];
+        }
+
+        private Dictionary<string, Gene> CloneData()
+        {
+            Dictionary<string, Gene> ans = new Dictionary<string, Gene>();
+
+            foreach (KeyValuePair<string, Gene> kvp in genes.Data)
+            {
+                ans[kvp.Key] = new Gene(kvp.Value);
+            }
+
+            return ans;
         }
     }
 }
