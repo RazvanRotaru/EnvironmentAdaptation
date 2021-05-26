@@ -1,20 +1,19 @@
 ﻿using GeneticAlgorithmForSpecies.Environment;
 using GeneticAlgorithmForSpecies.Equipment;
 using GeneticAlgorithmForSpecies.Genes;
+using GeneticAlgorithmForSpecies.Structures;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace GeneticAlgorithmForSpecies.Mutation
 {
-    public class MutationController : MonoBehaviour
+    public class MutationController : CustomBehaviour<int>
     {
         [SerializeField] private Mutator mutator;
         [SerializeField] private int mutationRate = 5;
         [SerializeField] private float damageRate = 2f;
         [SerializeField] private float envDamage = 1e-01f;
-        [SerializeField] private bool mutationLock = false;
-        [SerializeField] private bool damageLock = false;
 
         [SerializeField] private GeneContainer genes;
 
@@ -28,15 +27,16 @@ namespace GeneticAlgorithmForSpecies.Mutation
         {
             // TODO load genes
             genes = new GeneContainer();
-
             // TODO load mutator
             mutator = new Mutator();
 
             player = GetComponent<PlayerController>();
             equipment = GetComponent<EquipmentController>();
+
+            Init((int x) => { return Time.time > 0 && Time.time % x == 0; }, ref mutationRate);
         }
 
-        private void Update()
+        protected override void CustomUpdate()
         {
             HandleEnvironmnet();
         }
@@ -58,31 +58,24 @@ namespace GeneticAlgorithmForSpecies.Mutation
                     var entry = currEnvAspects[gene.Key];
                     if (!gene.Value.OptimalInterval.Compare(entry))
                     {
-                        //Debug.Log(gene.Key.ToString() + " is affected by ");
                         debugText += "<i><color=orange>" + gene.Key + "</color></i> ";
-
-                        // Take damage
                         affectedGenes.Add(gene.Key);
                     }
                 }
             }
 
+            Debug.Log($"Affecteg genes {affectedGenes.Count}");
             if (affectedGenes.Count != 0)
             {
                 Debug.Log(debugText);
-
-                if (!mutationLock)
-                    StartCoroutine(Mutate(EnvironmentManager.Instance.GetController(transform.position), affectedGenes));
-
-                if (!damageLock)
-                    StartCoroutine(TakeDamage(affectedGenes));
+                Mutate(EnvironmentManager.Instance.GetController(transform.position), affectedGenes);
             }
         }
 
 
+        // TODO move somewhere else
         IEnumerator TakeDamage(List<string> affectedGenes)
         {
-            damageLock = true;
 
 
             /* foreach (var gene in affectedGenes)
@@ -103,16 +96,12 @@ namespace GeneticAlgorithmForSpecies.Mutation
 
             yield return new WaitForSeconds(damageRate);
 
-            damageLock = false;
             yield break;
         }
 
 
-        IEnumerator Mutate(EnvironmentController envController, List<string> affectedGenes)
+        void Mutate(EnvironmentController envController, List<string> affectedGenes)
         {
-            mutationLock = true;
-            yield return new WaitForSeconds(mutationRate);
-
             string debugText = "<b>Mutation in progress...</b>\n";
 
             Dictionary<string, Gene> prevGenes = genes.DataColne;
@@ -130,9 +119,6 @@ namespace GeneticAlgorithmForSpecies.Mutation
                 //Debug.Log(text);
             }
             Debug.Log(debugText);
-
-            mutationLock = false;
-            yield break;
         }
     }
 }

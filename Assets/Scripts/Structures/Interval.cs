@@ -11,10 +11,10 @@ namespace GeneticAlgorithmForSpecies.Structures
         public float Min { get => min; set => min = value; }
         public float Max { get => max; set => max = value; }
 
-        public Interval(float min, float max)
+        public Interval(float a, float b)
         {
-            this.min = min;
-            this.max = max;
+            this.min = Mathf.Min(a, b);
+            this.max = Mathf.Max(a, b);
         }
 
         public Interval(Interval other)

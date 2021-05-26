@@ -37,7 +37,6 @@ public class PathPoint : MonoBehaviour
 
     IEnumerator WaitAndContinue(PathFollower player)
     {
-        Debug.Log("coroutinestarted");
         yield return new WaitForSeconds(pathManager.WaitTime);
         player.Continue(pathManager);
     }

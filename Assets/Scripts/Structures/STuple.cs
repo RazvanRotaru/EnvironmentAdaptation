@@ -3,6 +3,11 @@ using UnityEngine;
 
 namespace GeneticAlgorithmForSpecies.Structures
 {
+    /// <summary>
+    /// STuple extends <c>Tuple</c> in order to allow serialization.
+    /// </summary>
+    /// <typeparam name="T1">The type of the first item.</typeparam>
+    /// <typeparam name="T2">The type of the second item.</typeparam>
     [Serializable]
     public class STuple<T1, T2> : Tuple<T1, T2>
     {
@@ -18,7 +23,14 @@ namespace GeneticAlgorithmForSpecies.Structures
             value2 = item2;
         }
 
+        /// <summary>
+        /// Returns the value of the first item of the tuple.
+        /// </summary>
         public new T1 Item1 { get => value1; }
+
+        /// <summary>
+        /// Returns the value of the second item of the tuple.
+        /// </summary>
         public new T2 Item2 { get => value2; }
     }
 }

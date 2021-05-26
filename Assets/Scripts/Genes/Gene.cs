@@ -17,7 +17,7 @@ namespace GeneticAlgorithmForSpecies.Genes
         private float influence = 1.0f;
 
         public float Influnce { get => influence; }
-        public Interval OptimalInterval { get => optimalValues; set => optimalValues = value; }
+        public Interval OptimalInterval { get => optimalValues; set => SetInterval(value); }
 
         public Gene()
         {
@@ -44,5 +44,11 @@ namespace GeneticAlgorithmForSpecies.Genes
         //{
         //    return optimalValues.Difference(envValue) * influence;
         //}
+
+        private void SetInterval(Interval newInterval)
+        {
+            optimalValues = new Interval(newInterval);
+            influence = 1.0f / (optimalValues.Max - optimalValues.Min + 1);
+        }
     }
 }
