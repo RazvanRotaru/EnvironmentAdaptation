@@ -1,0 +1,6 @@
+10,Temperature,Humidity,AtmPressure
+20,Temperature,Humidity,AtmPressure
+10,Temperature,Humidity,AtmPressure
+20,Temperature,Humidity,AtmPressure
+10,Temperature,Humidity,AtmPressure
+20,Humidity,AtmPressure

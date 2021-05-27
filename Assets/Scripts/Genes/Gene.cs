@@ -50,5 +50,10 @@ namespace GeneticAlgorithmForSpecies.Genes
             optimalValues = new Interval(newInterval);
             influence = 1.0f / (optimalValues.Max - optimalValues.Min + 1);
         }
+
+        public bool IsSuitable(float value)
+        {
+            return optimalValues.Compare(value);
+        }
     }
 }

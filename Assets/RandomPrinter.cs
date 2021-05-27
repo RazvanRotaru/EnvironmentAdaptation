@@ -7,11 +7,12 @@ class RandomPrinter : CustomBehaviour<int>
     {
         int deltaTime = 1;
         Init((int x) => { return Time.time % x == 0; }, ref deltaTime);
-        Debugger.SetLogFunction((object x) => { Debug.Log($"<color=red>{x}</color>"); });
+        Debugger.RegisterLogFunction((object x) => { Debug.Log($"is <color=red>{x}</color>"); }, GetType());
+        Debugger.RegisterLogFunction((object x) => { Debug.Log($"this is also <color=red>{x}</color>"); }, nameof(CustomUpdate));
     }
 
     protected override void CustomUpdate()
     {
-        Debugger.Log("working");
+        //Debugger.Log("working");
     }
 }

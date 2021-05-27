@@ -4,6 +4,7 @@ using GeneticAlgorithmForSpecies.Genes;
 using GeneticAlgorithmForSpecies.Structures;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace GeneticAlgorithmForSpecies.Mutation
@@ -21,19 +22,33 @@ namespace GeneticAlgorithmForSpecies.Mutation
         [SerializeField] private PlayerController player;
         [SerializeField] private EquipmentController equipment;
 
+        [Header("Logging")]
+        [SerializeField] private string debugFile;
+
         public GeneContainer Genes { get => genes; }
 
-        private void Start()
+        private void OnValidate()
+        {
+            //debugFile = EditorUtility.OpenFolderPanel("Select Directory", Application.dataPath, "Logs");
+        }
+
+        private void Awake()
         {
             // TODO load genes
             genes = new GeneContainer();
             // TODO load mutator
+            // TODO test different mutators, will use sufix param to write different logs
             mutator = new Mutator();
 
             player = GetComponent<PlayerController>();
             equipment = GetComponent<EquipmentController>();
+        }
 
+        private void Start()
+        {
             Init((int x) => { return Time.time > 0 && Time.time % x == 0; }, ref mutationRate);
+            Debugger.RegisterLogFunction((Dictionary<string, Gene> d) => MutationLog(d), nameof(Mutate));
+            Debugger.RegisterLogFunction((List<string> l) => EnvironmentLog(l), nameof(HandleEnvironmnet));
         }
 
         protected override void CustomUpdate()
@@ -43,33 +58,39 @@ namespace GeneticAlgorithmForSpecies.Mutation
 
         private void HandleEnvironmnet()
         {
-            Dictionary<string, float> currEnvAspects;
-            currEnvAspects = EnvironmentManager.Instance.GetAspects(transform.position);
+            Dictionary<string, float> currEnvAspects = EnvironmentManager.Instance.GetAspects(transform.position);
             if (currEnvAspects == null)
                 return;
 
             List<string> affectedGenes = new List<string>();
-            string debugText = "<b>Genes affected by <color=cyan>"
-                                + EnvironmentManager.Instance.GetEnvironmentType(transform.position) + "</color></b>: ";
             foreach (KeyValuePair<string, Gene> gene in genes.Data)
             {
                 if (currEnvAspects.ContainsKey(gene.Key))
                 {
-                    var entry = currEnvAspects[gene.Key];
-                    if (!gene.Value.OptimalInterval.Compare(entry))
+                    if (!gene.Value.IsSuitable(currEnvAspects[gene.Key]))
                     {
-                        debugText += "<i><color=orange>" + gene.Key + "</color></i> ";
                         affectedGenes.Add(gene.Key);
                     }
                 }
             }
-
-            Debug.Log($"Affecteg genes {affectedGenes.Count}");
+            
+            Debugger.Log(affectedGenes);
             if (affectedGenes.Count != 0)
             {
-                Debug.Log(debugText);
                 Mutate(EnvironmentManager.Instance.GetController(transform.position), affectedGenes);
             }
+        }
+
+        private void EnvironmentLog(List<string> affectedGenes)
+        {
+            string currEnv = EnvironmentManager.Instance.GetEnvironmentType(transform.position);
+            string debugText = $"<b>{affectedGenes.Count} genes affected by <color=cyan>{currEnv}</color></b>: ";
+            debugText += string.Join(" ", affectedGenes.Select(gene => $"<i><color=orange>{gene}</color></i>").ToArray());
+            Debug.Log(debugText);
+
+            string debugLog = string.Join(",", affectedGenes.Select(gene => gene.ToString()).ToArray());
+            string debugHelp = "elapsed time(s),affect genes<list>";
+            Debugger.WriteToFile(debugLog, header: debugHelp, timestamp: true);
         }
 
 
@@ -102,23 +123,27 @@ namespace GeneticAlgorithmForSpecies.Mutation
 
         void Mutate(EnvironmentController envController, List<string> affectedGenes)
         {
-            string debugText = "<b>Mutation in progress...</b>\n";
-
             Dictionary<string, Gene> prevGenes = genes.DataColne;
 
-
             equipment.ApplyBuffs(ref genes);
-            // mutate to be adapt to current region
             mutator.Adapt(ref genes, envController, affectedGenes);
             equipment.RemoveBuffs(ref genes);
 
-            foreach (KeyValuePair<string, Gene> entry in genes.Data)
-            {
-                debugText += "<color=orange>" + entry.Key.ToString() + "</color>\t -> mutated to <color=green>" + entry.Value.ToString()
-                                + "</color> from <color=red>[" + prevGenes[entry.Key].ToString() + "</color>\n";
-                //Debug.Log(text);
-            }
+            Debugger.Log(prevGenes);
+        }
+
+        private void MutationLog(Dictionary<string, Gene> prev)
+        {
+            string debugText = "<b>Mutation in progress...</b>\n";
+            debugText += string.Join("\n", genes.Data.Select(kv => $"<color=orange></color>{kv.Key}\t-> mutated from " +
+                                                    $"<color=red>{prev[kv.Key]}</color> to <color=green>{kv.Value}</color>").ToArray());
             Debug.Log(debugText);
+
+            string debugLog = string.Join(",", genes.Data.Keys.Select(key => key.ToString()).ToArray());
+            debugLog += string.Join(",", genes.Data.Values.Select(value => value.ToString()).ToArray());
+            debugLog += string.Join(",", prev.Values.Select(value => value.ToString()).ToArray());
+            string debugHelp = "elapsed time(s),gene type,current value,previous value\n";
+            Debugger.WriteToFile(debugLog, header: debugHelp, timestamp: true);
         }
     }
 }
