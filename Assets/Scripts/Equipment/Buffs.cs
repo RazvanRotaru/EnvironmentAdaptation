@@ -5,21 +5,47 @@ using System.Collections.Generic;
 
 namespace GeneticAlgorithmForSpecies.Equipment
 {
+    /// <summary>
+    /// This class describes the buff of an item
+    /// </summary>
     [System.Serializable]
-    [CreateAssetMenu(fileName = "New Buff", menuName = "Equipment/Buffs", order = 1)]
-    public class Buffs : ScriptableObject
+    public class Buffs
     {
-        [SerializeField] private ValueContainer<Gene.Type, Interval> buffs;
+        private ValueContainer<Gene.Type, Interval> _data = null;
+        [SerializeField] private List<STuple<Gene.Type, Interval>> values;
 
         public Buffs()
         {
-            buffs = new ValueContainer<Gene.Type, Interval>();
+            values = new List<STuple<Gene.Type, Interval>>()
+            {
+                new STuple<Gene.Type, Interval>(Gene.Type.Temperature, new Interval()),
+                new STuple<Gene.Type, Interval>(Gene.Type.Humidity, new Interval()),
+                new STuple<Gene.Type, Interval>(Gene.Type.AtmPressure, new Interval()),
+            };
+            _data = null;
         }
 
-        private bool HasBuff(Gene.Type type) => buffs.ContainsKey(type);
-        private Interval GetBuff(Gene.Type type) => buffs[type];
+        public void Init()
+        {
+            _data = new ValueContainer<Gene.Type, Interval>(tupleList: values);
+        }
 
-        public void AddBuff(Gene.Type type, Interval value) => buffs[type] += value;
+        private ValueContainer<Gene.Type, Interval> Values { get => GetValues(); }
+
+        private ValueContainer<Gene.Type, Interval> GetValues()
+        {
+            if (_data == null)
+            {
+                _data = new ValueContainer<Gene.Type, Interval>(tupleList: values);
+            }
+
+            return _data;
+        }
+
+        private bool HasBuff(Gene.Type type) => Values.ContainsKey(type);
+        private Interval GetBuff(Gene.Type type) => Values[type];
+
+        public void AddBuff(Gene.Type type, Interval value) => Values[type] += value;
 
         private void ApplyBuffs(ref GeneContainer geneContainer, int sign)
         {

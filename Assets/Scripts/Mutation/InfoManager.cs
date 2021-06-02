@@ -14,6 +14,9 @@ namespace GeneticAlgorithmForSpecies.Mutation
         [SerializeField] private Transform envBox;
         [SerializeField] private Text prefabTextObj;
 
+        private Text _playerInfo;
+        private Text _envInfo;
+
         [Header("References")]
         [SerializeField] private PlayerController player;
         private EquipmentController _equipment;
@@ -22,7 +25,9 @@ namespace GeneticAlgorithmForSpecies.Mutation
         private void Start()
         {
             playerBox = GameObject.Find("PlayerInfo").transform.Find("List");
+            _playerInfo = Instantiate(prefabTextObj, playerBox) as Text;
             envBox = GameObject.Find("EnvironmentInfo").transform.Find("List");
+            _envInfo = Instantiate(prefabTextObj, envBox) as Text;
 
             Assert.IsNotNull(player, "Player is not referenced in InfoManager");
 
@@ -40,18 +45,8 @@ namespace GeneticAlgorithmForSpecies.Mutation
 
         private void ShowInfo()
         {
-            // TODO use either an object pool or only one TextBox
-            foreach (Transform child in playerBox)
-                Destroy(child.gameObject);
-            foreach (Transform child in envBox)
-                Destroy(child.gameObject);
-
-
-            prefabTextObj.text = GeneInfo();
-            Instantiate(prefabTextObj, playerBox);
-
-            prefabTextObj.text = EnvironmentInfo();
-            Instantiate(prefabTextObj, envBox);
+            _playerInfo.text = GeneInfo();
+            _envInfo.text = EnvironmentInfo();
         }
 
 
@@ -64,9 +59,8 @@ namespace GeneticAlgorithmForSpecies.Mutation
             _equipment.ApplyBuffs(ref genes);
             foreach (KeyValuePair<string, Gene> entry in genes.Data)
             {
-                text += entry.Key.ToString() + ": " + entry.Value.ToString() + "\n";
-
-            }
+                text += string.Format("{0} {1}\n", $"{entry.Key}:", entry.Value.ToString());
+            }   
             _equipment.RemoveBuffs(ref genes);
 
             return text;
@@ -78,14 +72,14 @@ namespace GeneticAlgorithmForSpecies.Mutation
         private string EnvironmentInfo()
         {
             string text = string.Empty;
-            Dictionary<string, float> currEnvAspects = EnvironmentManager.Instance.GetAspects(transform.position);
+            Dictionary<string, float> currEnvAspects = EnvironmentManager.Instance.GetAspects(player.transform.position);
 
             if (currEnvAspects == null)
                 return text + "Unknown";
 
             foreach (KeyValuePair<string, float> entry in currEnvAspects)
             {
-                text += entry.Key.ToString() + ": " + entry.Value.ToString() + "\n";
+                text += string.Format("{0} {1}\n", $"{entry.Key}:", entry.Value.ToString());
             }
 
             return text;

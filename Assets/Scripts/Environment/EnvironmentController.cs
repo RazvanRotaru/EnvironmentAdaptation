@@ -4,6 +4,9 @@ using GeneticAlgorithmForSpecies.Structures;
 
 namespace GeneticAlgorithmForSpecies.Environment
 {
+    /// <summary>
+    /// This class handles a biom
+    /// </summary>
     public class EnvironmentController : MonoBehaviour
     {
         public enum Aspect

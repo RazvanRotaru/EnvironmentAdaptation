@@ -4,6 +4,9 @@ using GeneticAlgorithmForSpecies.Structures;
 
 namespace GeneticAlgorithmForSpecies.Genes
 {
+    /// <summary>
+    /// This class describes a individual
+    /// </summary>
     [System.Serializable]
     public class GeneContainer
     {
@@ -12,7 +15,7 @@ namespace GeneticAlgorithmForSpecies.Genes
         public Dictionary<string, Gene> Data { get => values.Data; }
         public Dictionary<string, Gene> DataColne { get => CloneData(); }
 
-        public Gene this[string key] { get => GetGene(key); /*set => SetValue(key, value);*/ }
+        public Gene this[string key] { get => GetGene(key); }
         
         public GeneContainer()
         {
@@ -20,13 +23,37 @@ namespace GeneticAlgorithmForSpecies.Genes
 
             foreach (Gene.Type type in (Gene.Type[])System.Enum.GetValues(typeof(Gene.Type)))
             {
-                values[type] = new Gene();
+                values[type] = Gene.GetDefault(type.ToString());
             }
         }
 
         public GeneContainer(GeneContainer other)
         {
             values = new ValueContainer<Gene.Type, Gene>(other.values);
+        }
+
+        public GeneContainer(GeneContainer otherGene, Dictionary<string, Gene> other)
+        {
+            Dictionary<Gene.Type, Gene> newValues = new Dictionary<Gene.Type, Gene>();
+            values = new ValueContainer<Gene.Type, Gene>(otherGene.values);
+
+            foreach (Gene.Type type in (Gene.Type[])System.Enum.GetValues(typeof(Gene.Type)))
+            {
+                if (other.TryGetValue(type.ToString(), out Gene gene))
+                {
+                    newValues[type] = gene;
+                }
+                else if (values.Data.TryGetValue(type.ToString(), out gene))
+                {
+                    newValues[type] = gene;
+                }
+                else
+                {
+                    newValues[type] = Gene.GetDefault(type.ToString());
+                }
+            }
+
+            values = new ValueContainer<Gene.Type, Gene>(newValues);
         }
 
         public Gene GetGene(string name)

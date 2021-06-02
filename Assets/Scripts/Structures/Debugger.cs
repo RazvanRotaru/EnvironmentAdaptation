@@ -129,22 +129,35 @@ namespace GeneticAlgorithmForSpecies.Structures
         /// <param name="header">Description of containing logs, is only written once, at the beggining of the file</param>
         /// <param name="method">Calling method</param>
         /// <param name="callerPath">The path of the caller methods file, which determines its type</param>
-        public static void WriteToFile(object message, string sufix = "log.txt", bool timestamp = false, string header = "",
+        public static void WriteToFile(object message, string sufix = "log", bool timestamp = false,
+                                        string header = "", string fileType = ".txt", string subdir = "",
                                 [System.Runtime.CompilerServices.CallerMemberName] string method = "",
                                 [System.Runtime.CompilerServices.CallerFilePath] string callerPath = "")
         {
             if (timestamp)
             {
                 message = $"{Time.time},{message}";
+                if (header.Length > 0)
+                {
+                    header = $"timestamp,{header}";
+                }
             }
-            
+
             string dir = $"{_folder}/{GetTypeFromPath(callerPath)}";
+            if (subdir.Length > 0)
+            {
+                dir += $"/{subdir}";
+            }
             if (!Directory.Exists(dir))
             {
                 Directory.CreateDirectory(dir);
             }
 
-            string path = $"{dir}/{method}_{sufix}";
+            if (sufix.Length > 0 && !sufix.StartsWith("_"))
+            {
+                sufix = $"_{sufix}";
+            }
+            string path = $"{dir}/{method}{sufix}{fileType}";
 
             if (!File.Exists(path))
             {

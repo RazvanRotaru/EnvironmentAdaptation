@@ -3,6 +3,11 @@ using UnityEngine;
 
 namespace GeneticAlgorithmForSpecies.Structures
 {
+    /// <summary>
+    /// A custom serializable Dictionary implementation
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
     [System.Serializable]
     public class ValueContainer<TKey, TValue>
     {
@@ -19,8 +24,13 @@ namespace GeneticAlgorithmForSpecies.Structures
 
         public ValueContainer(ValueContainer<TKey, TValue> other)
         {
-            values = new Dictionary<string, TValue>(other.values);
-            list = new List<STuple<TKey, TValue>>(other.list);
+            values = new Dictionary<string, TValue>();
+            list = new List<STuple<TKey, TValue>>();
+
+            foreach (STuple<TKey, TValue> elm in other.list)
+            {
+                SetValue(elm.Item1, elm.Item2);
+            }
         }
 
         public ValueContainer(Dictionary<TKey, TValue> values)
@@ -30,8 +40,7 @@ namespace GeneticAlgorithmForSpecies.Structures
              
             foreach (KeyValuePair<TKey, TValue> kvp in values)
             {
-                this.values[kvp.Key.ToString()] = kvp.Value;
-                list.Add(new STuple<TKey, TValue>(kvp.Key, kvp.Value));
+                SetValue(kvp.Key, kvp.Value);
             }
         }
 
@@ -42,10 +51,9 @@ namespace GeneticAlgorithmForSpecies.Structures
 
             foreach (STuple<TKey, TValue> tuple in tupleList)
             {
-                values[tuple.Item1.ToString()] = tuple.Item2;
-                list.Add(new STuple<TKey, TValue>(tuple.Item1, tuple.Item2));
+                SetValue(tuple.Item1, tuple.Item2);
             }
-        } 
+        }
 
         public TValue this[TKey key] { get => GetValue(key);  set => SetValue(key, value); }
 
@@ -67,14 +75,23 @@ namespace GeneticAlgorithmForSpecies.Structures
 
         private void SetValue(TKey key, TValue value)
         {
-            values[key.ToString()] = value;
+            System.Type type = typeof(TValue);
+            var constructor = type.GetConstructor(System.Type.EmptyTypes);
+
+            TValue newValue = value;
+            if (constructor != null && !typeof(TValue).IsSubclassOf(typeof(MonoBehaviour)))
+            {
+                newValue = (TValue)System.Activator.CreateInstance(typeof(TValue), new object[] { value });
+            }
+
+            values[key.ToString()] = newValue;
 
             if (list.Exists(e => e.Item1.Equals(key)))
             {
                 list.RemoveAll(e => e.Item1.Equals(key));
             }
 
-            list.Add(new STuple<TKey, TValue>(key, value));
+            list.Add(new STuple<TKey, TValue>(key, newValue));
         }
     }
 }

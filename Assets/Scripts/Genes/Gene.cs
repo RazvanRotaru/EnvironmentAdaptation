@@ -1,8 +1,12 @@
 ﻿using UnityEngine;
 using GeneticAlgorithmForSpecies.Structures;
+using System.Collections.Generic;
 
 namespace GeneticAlgorithmForSpecies.Genes
 {
+    /// <summary>
+    /// This class describes a gene
+    /// </summary>
     [System.Serializable]
     public class Gene
     {
@@ -12,6 +16,20 @@ namespace GeneticAlgorithmForSpecies.Genes
             Humidity,
             AtmPressure,
         }
+
+        private static Dictionary<string, Interval> _ranges = new Dictionary<string, Interval>()
+        {
+            { Type.Temperature.ToString(), new Interval(0, 60) },
+            { Type.Humidity.ToString(), new Interval(0, 100) },
+            { Type.AtmPressure.ToString(), new Interval(0, 5) },
+        };
+
+        private static Dictionary<string, Interval> _defaults = new Dictionary<string, Interval>()
+        {
+            { Type.Temperature.ToString(), new Interval(15, 25) },
+            { Type.Humidity.ToString(), new Interval(20, 40) },
+            { Type.AtmPressure.ToString(), new Interval(0.5f, 0.65f) },
+        };
 
         private Interval optimalValues;
         private float influence = 1.0f;
@@ -37,13 +55,23 @@ namespace GeneticAlgorithmForSpecies.Genes
 
         public override string ToString()
         {
-            return optimalValues.ToString() + " influence: " + influence.ToString();
+            return optimalValues.ToString();
         }
 
-        //public float GetDamage(float envValue)
-        //{
-        //    return optimalValues.Difference(envValue) * influence;
-        //}
+        public string FullString()
+        {
+            return optimalValues.ToString() +" of influence: " + influence.ToString();
+        }
+
+        static public Interval GetRange(string type)
+        {
+            return _ranges[type];
+        }
+
+        static public Gene GetDefault(string type)
+        {
+            return new Gene(_defaults[type]);
+        }
 
         private void SetInterval(Interval newInterval)
         {

@@ -5,16 +5,26 @@ namespace GeneticAlgorithmForSpecies.Structures
     [System.Serializable]
     public class Interval
     {
-        private float min = 0.0f;
-        private float max = 0.0f;
+        [SerializeField] private float min = 0.0f;
+        [SerializeField] private float max = 0.0f;
 
         public float Min { get => min; set => min = value; }
         public float Max { get => max; set => max = value; }
 
-        public Interval(float a, float b)
+        public Interval() { }
+
+        public Interval(float a, float b, bool fix = false)
         {
-            this.min = Mathf.Min(a, b);
-            this.max = Mathf.Max(a, b);
+            if (!fix)
+            {
+                min = Mathf.Min(a, b);
+                max = Mathf.Max(a, b);
+            } 
+            else
+            {
+                min = a;
+                max = b;
+            }
         }
 
         public Interval(Interval other)
@@ -30,7 +40,7 @@ namespace GeneticAlgorithmForSpecies.Structures
             => new Interval(a.min + b.min, a.max + b.max);
 
         public static Interval operator *(Interval a, float b)
-           => new Interval(a.min * b, a.max * b);
+           => new Interval(a.min * b, a.max * b, fix:true);
 
         public bool Contains(float value)
         {
@@ -44,13 +54,13 @@ namespace GeneticAlgorithmForSpecies.Structures
 
         public float Difference(float value)
         {
-            return Mathf.Sqrt(Mathf.Pow(min - value, 2) +
-                                Mathf.Pow(max - value, 2));
+            return Mathf.Min(Mathf.Abs(min - value),
+                                Mathf.Abs(max - value));
         }
 
         public override string ToString()
         {
-            return "[" + min + ", " + max + "]";
+            return $"[{min:0.00}, {max:0.00}]";
         }
     }
 }

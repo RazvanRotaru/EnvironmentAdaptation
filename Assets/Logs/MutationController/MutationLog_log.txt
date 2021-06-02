@@ -1,6 +1,0 @@
-10,Temperature,Humidity,AtmPressure[0, 7] influence: 0.125,[0, 2] influence: 0.3333333,[0, 3] influence: 0.25[0, 0] influence: 1,[0, 0] influence: 1,[0, 0] influence: 1
-20,Temperature,Humidity,AtmPressure[5, 9] influence: 0.2,[3, 7] influence: 0.2,[0, 0] influence: 1[0, 7] influence: 0.125,[0, 2] influence: 0.3333333,[0, 3] influence: 0.25
-10,Temperature,Humidity,AtmPressure[4, 9] influence: 0.1666667,[2, 5] influence: 0.25,[0, 0] influence: 1[0, 0] influence: 1,[0, 0] influence: 1,[0, 0] influence: 1
-20,Temperature,Humidity,AtmPressure[2, 7] influence: 0.1666667,[0, 2] influence: 0.3333333,[0, 4] influence: 0.2[4, 9] influence: 0.1666667,[2, 5] influence: 0.25,[0, 0] influence: 1
-10,Temperature,Humidity,AtmPressure[0, 0] influence: 1,[0, 7] influence: 0.125,[0, 5] influence: 0.1666667[0, 0] influence: 1,[0, 0] influence: 1,[0, 0] influence: 1
-20,Temperature,Humidity,AtmPressure[0, 0] influence: 1,[6, 6] influence: 1,[1, 3] influence: 0.3333333[0, 0] influence: 1,[0, 7] influence: 0.125,[0, 5] influence: 0.1666667

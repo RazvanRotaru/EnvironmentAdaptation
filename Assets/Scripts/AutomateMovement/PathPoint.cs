@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PathPoint : MonoBehaviour
 {
-    [SerializeField] PathManager pathManager;
+    [SerializeField] private PathManager pathManager;
     
     // Start is called before the first frame update
     void Start()

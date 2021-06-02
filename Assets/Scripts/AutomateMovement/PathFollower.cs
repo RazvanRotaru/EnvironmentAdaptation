@@ -5,21 +5,17 @@ using UnityEngine;
 public class PathFollower : MonoBehaviour
 {
     [SerializeField] private Vector3? target = null;
-    [SerializeField] private Vector3 dir = Vector3.zero;
     [SerializeField] private PathManager defaultPath;
     [SerializeField] private float speed = 5f;
     [SerializeField] private int currPoint = 0;
 
+    public float WaitTime { get => defaultPath.WaitTime; set => defaultPath.WaitTime = value; }
+
     private void Start()
     {
-        if (defaultPath != null)
-        {
-            target = defaultPath.First;
-            dir = (Vector3)(target - transform.position);
-        }
+        Init();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (target == null)
@@ -27,20 +23,12 @@ public class PathFollower : MonoBehaviour
             return;
         }
 
-        string debugText = "Moving from " + transform.position.ToString();
         Move();
-        debugText += " to " + transform.position.ToString() + " having as target " + target.ToString();
-        //Debug.Log(debugText);
-    }
-
-    private void ThrowYourself()
-    {
-        transform.position = Vector3.Lerp(transform.position, (Vector3)target, speed * Time.deltaTime);
     }
 
     private void Move()
     {
-        transform.position += dir * speed / 10 * Time.deltaTime;
+        transform.position = Vector3.MoveTowards(transform.position, (Vector3)target, speed * Time.deltaTime);
     }
 
     public void Stop()
@@ -48,10 +36,18 @@ public class PathFollower : MonoBehaviour
         target = null;
     }
 
+    public void Init()
+    {
+        currPoint = 0;
+        if (defaultPath != null)
+        {
+            target = defaultPath.First;
+        }
+    }
+
     public void Continue(PathManager path)
     {
         Vector3 target = path.GetNextPathPoint(currPoint++);
         this.target = target;
-        dir = target - transform.position;
     }
 }

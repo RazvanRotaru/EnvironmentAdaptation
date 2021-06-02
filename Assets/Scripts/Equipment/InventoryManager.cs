@@ -1,51 +1,60 @@
-﻿using GeneticAlgorithmForSpecies.Equipment;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class InventoryManager : MonoBehaviour {
-    private static InventoryManager _instance;
-    public static InventoryManager Instance { get => _instance; }
-
-
-    [SerializeField] List<Item> items;
-    [SerializeField] int size;
-
-    private void Awake()
+namespace GeneticAlgorithmForSpecies.Equipment
+{
+    /// <summary>
+    /// Thiss class handles the inventory
+    /// </summary>
+    public class InventoryManager : MonoBehaviour
     {
-        if (_instance != null && _instance != this)
+        private static InventoryManager _instance;
+        public static InventoryManager Instance { get => _instance; }
+
+
+        [SerializeField] List<Item> items;
+        [SerializeField] int size;
+
+        private void Awake()
         {
-            Destroy(this.gameObject);
+            if (_instance != null && _instance != this)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                _instance = this;
+            }
         }
-        else
+
+        void Start()
         {
-            _instance = this;
+            // load items from PlayerPrefs
         }
-    }
 
-    // Start is called before the first frame update
-    void Start() {
-        // load items from PlayerPrefs
-    }
-
-    private static InventoryManager GetInstance()
-    {
-        if (_instance == null)
+        private static InventoryManager GetInstance()
         {
-            _instance = new InventoryManager();
-        }
-        return _instance;
-    }
-
-    public bool Add(Item item) {
-        if (items.Count > size) {
-            return false;
+            if (_instance == null)
+            {
+                _instance = new InventoryManager();
+            }
+            return _instance;
         }
 
-        items.Add(item);
-        return true;
-    }
+        public bool Add(Item item)
+        {
+            if (items.Count > size)
+            {
+                return false;
+            }
 
-    public void Remove(Item item) {
-        items.Remove(item);
+            items.Add(item);
+            return true;
+        }
+
+        public void Remove(Item item)
+        {
+            items.Remove(item);
+        }
     }
 }

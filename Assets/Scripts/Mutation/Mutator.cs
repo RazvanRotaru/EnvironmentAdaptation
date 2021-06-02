@@ -17,111 +17,156 @@ namespace GeneticAlgorithmForSpecies.Mutation
         Tour,
     }
 
+    /// <summary>
+    /// This class is handling the mutation
+    /// </summary>
     [System.Serializable]
     public class Mutator
     {
         [SerializeField] private readonly int populationSize;
         [SerializeField] private readonly int selectedSize;
         [SerializeField] private readonly byte mask;
-        [SerializeField] private List<string> affectedGenes;
+        [SerializeField] private string affectedGene;
 
+        private string Params { get => $"\nPopulation Size {populationSize}, Selected Size {selectedSize}, Mask {System.Convert.ToString(mask, 2)}"; }
         private readonly Selector _selector;
-        private readonly ActionRef<List<GeneContainer>, EnvironmentController, float> Select;
+        private readonly ActionRef<List<Gene>, EnvironmentController, float> Select;
 
-        public Mutator(int populationSize = 8, string mask = "", int selectedSize = 2, SelectionType selectionType = SelectionType.Roulette)
+        public Mutator(int populationSize = 8, byte mask = 0b01010101, int selectedSize = 4, SelectionType selectionType = SelectionType.Roulette)
         {
+            Assert.IsTrue(selectedSize >= 2 && selectedSize % 2 == 0, "Selection size should be even and greater than 2");
+            Assert.IsTrue(populationSize >= 2 && populationSize % 2 == 0, "Population size should be even and greater than 2");
+
             this.populationSize = populationSize;
             this.selectedSize = selectedSize;
+            this.mask = mask;
 
             _selector = new Selector(Fitness, selectedSize);
             Select = _selector.GetSelectionFunction(selectionType);
-
-            if (mask.Equals(""))
-                //this.mask = (1 << sizeof(byte) * 4 /* *8/2 */) - 1; // 15 = b00001111
-                this.mask = 0b00001111;
-            else
-                this.mask = System.Convert.ToByte(mask);
         }
 
-        private float Fitness(GeneContainer geneContainer, Dictionary<string, float> envAspects)
+        /// <summary>
+        /// This function is used to select the best fitting individuals out of the population
+        /// </summary>
+        /// <param name="gene">The gene to be avaluated</param>
+        /// <param name="envAspects">Current environment aspects</param>
+        /// <returns></returns>
+        private double Fitness(Gene gene, Dictionary<string, float> envAspects)
         {
-            float ans = 1.0f;
+            double ans = 1.0d;
+            double kDiff = 2d;
+            double kRange = 1d;
 
-            foreach (var affectedGene in affectedGenes)
+            double kIsAffected = 1d;
+
+            if (envAspects.ContainsKey(affectedGene))
             {
-                if (envAspects.ContainsKey(affectedGene))
-                {
-                    ans += geneContainer.GetGene(affectedGene).OptimalInterval.Difference(envAspects[affectedGene]);
-                }
+                float envAspect = envAspects[affectedGene];
+                kIsAffected = gene.OptimalInterval.Contains(envAspect) ? 100d : 1d;
+                
+                Interval interval = gene.OptimalInterval;
+                ans = kDiff * interval.Difference(envAspect)
+                        + kRange * (interval.Max - interval.Min);
             }
 
-            return 1.0f / ans;
+            return kIsAffected / ans;
         }
 
-        private float GenerateNewValue(float seed)
+        /// <summary>
+        /// This function returns a new value for a given seed
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private float GenerateNewValue(float seed, string type)
         {
-            //return (int)seed ^ Mathf.NextPowerOfTwo((int)Random.Range(0, (1 << sizeof(byte) * 8) - 1)) / 2;
-            return Mathf.Clamp(seed + Random.Range(-5, 5), 0, byte.MaxValue);
+            Interval range = Gene.GetRange(type);
+            // deviation of 10 % of the range of the specific gene
+            float eps = ((range.Max - range.Min) / 10);
+
+
+            //return (int)seed ^ Mathf.NextPowerOfTwo((int)Random.Range(0, (1 << sizeof(byte) * 8) - 1)) / 2; // another variant
+            return Mathf.Clamp(seed + Random.Range(-eps, eps), range.Min, range.Max);
         }
 
 
-        private GeneContainer Mutate(GeneContainer geneContainer)
+        /// <summary>
+        /// This gene alters a given gene
+        /// </summary>
+        /// <param name="gene"></param>
+        /// <returns></returns>
+        private Gene Mutate(Gene gene)
         {
-            GeneContainer ans = new GeneContainer(geneContainer);
+            Gene ans = new Gene(gene);
 
-            foreach (var affectedGene in affectedGenes)
-            {
-                var v1 = GenerateNewValue(ans.GetGene(affectedGene).OptimalInterval.Min);
-                var v2 = GenerateNewValue(ans.GetGene(affectedGene).OptimalInterval.Max);
-                ans.GetGene(affectedGene).OptimalInterval = new Interval(v1, v2);
-            }
-
+            var v1 = GenerateNewValue(ans.OptimalInterval.Min, affectedGene);
+            var v2 = GenerateNewValue(ans.OptimalInterval.Max, affectedGene);
+ 
+            ans.OptimalInterval = new Interval(v1, v2);
+           
             return ans;
         }
 
-        private float Combine(float val1, float val2)
+        /// <summary>
+        /// This function combines two values in relation to this mutator's mask
+        /// </summary>
+        /// <param name="val1"></param>
+        /// <param name="val2"></param>
+        /// <param name="type">The type of the gene, which determines the maximum range</param>
+        /// <returns></returns>
+        private float Combine(float val1, float val2, string type)
         {
-            return val1 - (int)val1 + ((int)val1 & mask) +
-                    ((int)val2 & (byte.MaxValue ^ mask));
+            Interval range = Gene.GetRange(type);
+            float newVal = Mathf.Abs(val1) - Mathf.Floor(Mathf.Abs(val1)) +
+                            (Mathf.FloorToInt(Mathf.Abs(val1)) & mask) +
+                                (Mathf.FloorToInt(Mathf.Abs(val2)) & (byte.MaxValue ^ mask));
+            return Mathf.Clamp(newVal, range.Min, range.Max);
         }
 
-        private (GeneContainer first, GeneContainer second) CrossOver(GeneContainer father, GeneContainer mother)
+        /// <summary>
+        /// This gene creates two genes by combining the given two 
+        /// </summary>
+        /// <param name="father"></param>
+        /// <param name="mother"></param>
+        /// <returns></returns>
+        private (Gene first, Gene second) CrossOver(Gene father, Gene mother)
         {
-            GeneContainer child1 = new GeneContainer(father);
-            GeneContainer child2 = new GeneContainer(mother);
+            Gene child1 = new Gene(father);
+            Gene child2 = new Gene(mother);
 
 
-            foreach (var affectedGene in affectedGenes)
-            {
-                float v1, v2;
+            float v1, v2;
 
-                Interval fatherI = father.GetGene(affectedGene).OptimalInterval;
-                Interval motherI = mother.GetGene(affectedGene).OptimalInterval;
+            Interval fatherI = father.OptimalInterval;
+            Interval motherI = mother.OptimalInterval;
 
-                v1 = Combine(fatherI.Min, motherI.Min);
-                v2= Combine(motherI.Max, fatherI.Max);
-                child1.GetGene(affectedGene).OptimalInterval = new Interval(v1, v2);
+            v1 = Combine(fatherI.Min, motherI.Min, affectedGene);
+            v2= Combine(motherI.Max, fatherI.Max, affectedGene);
+            child1.OptimalInterval = new Interval(v1, v2);
 
-                v1 = Combine(motherI.Min, fatherI.Min);
-                v2 = Combine(fatherI.Max, motherI.Max);
-                child2.GetGene(affectedGene).OptimalInterval = new Interval(v1, v2);
-            }
+            v1 = Combine(motherI.Min, fatherI.Min, affectedGene);
+            v2 = Combine(fatherI.Max, motherI.Max, affectedGene);
+            child2.OptimalInterval = new Interval(v1, v2);
 
             return (first: child1, second: child2);
         }
 
-        private void CrossOver(ref List<GeneContainer> population)
+        /// <summary>
+        /// This function alters the genes in raport to this mutator's mask
+        /// </summary>
+        /// <param name="population">The list of genes to be altered</param>
+        private void CrossOver(ref List<Gene> population)
         {
             var indices = Enumerable.Range(0, population.Count).ToList();
             int iterations = population.Count / 2;
             for (int i = 0; i < iterations; ++i)
             {
                 int fatherIndex = Random.Range(0, indices.Count - 1);
-                GeneContainer father = population[indices[fatherIndex]];
+                Gene father = population[indices[fatherIndex]];
                 indices.RemoveAt(fatherIndex);
 
                 int motherIndex = Random.Range(0, indices.Count - 1);
-                GeneContainer mother = population[indices[motherIndex]];
+                Gene mother = population[indices[motherIndex]];
                 indices.RemoveAt(motherIndex);
 
                 var (first, second) = CrossOver(father, mother);
@@ -130,55 +175,48 @@ namespace GeneticAlgorithmForSpecies.Mutation
             }
         }
 
+        /// <summary>
+        /// This function adapts the player's genes in regard to this mutator's parameters
+        /// </summary>
+        /// <param name="geneContainer">The gene container to be altered</param>
+        /// <param name="environmentController">The environment aspects of the current location</param>
+        /// <param name="affectedGenes">The genes affected by the current biom</param>
+        /// <param name="aux">An auxiliar parameter used by Tournament and Roullete Selections</param>
         public void Adapt(ref GeneContainer geneContainer, EnvironmentController environmentController, List<string> affectedGenes, float aux = 2)
         {
-            List<GeneContainer> population = new List<GeneContainer> { geneContainer };
-            //PrintGenes(population, "Inital gene");
-            this.affectedGenes = affectedGenes;
-
-            // Mutate N/2-1 individuals
-            for (int i = 1; i < populationSize / 2; ++i)
+            Dictionary<string, Gene> adaptedGenes = new Dictionary<string, Gene>();
+            foreach (string affectedGene in affectedGenes)
             {
-                population.Add(Mutate(geneContainer));
-            }
-            //PrintGenes(population, "Mutated genes");
-            Assert.IsTrue(population.Contains(geneContainer), "Initial gene has been removed");
+                Gene currGene = geneContainer.Data[affectedGene];
+                List<Gene> population = new List<Gene> { currGene };
+                this.affectedGene = affectedGene;
 
-            // CrossOver N/2 individual parents to form another N/2 individual children
-            CrossOver(ref population);
-            //PrintGenes(population, "CrossedOver genes");
-            Assert.AreEqual(populationSize, population.Count, "CrossOver failed, not all individuals were used");
-
-            // Select K individuals from the current population
-            Select(ref population, environmentController, aux);
-            //PrintGenes(population, "Selected genes");
-            Assert.AreEqual(selectedSize, population.Count, "Selection failed, not all individuals were used");
-
-            // CrossOver K individual parent to generate another K children
-            CrossOver(ref population);
-            //PrintGenes(population, "CrossedOver Selected genes");
-
-            // Select a random individual from the latest population of 2*K individuals
-            int index = Random.Range(0, population.Count - 1);
-            //Debug.Log("Selected index: " + index);
-
-            geneContainer = population[index];
-        }
-
-        private void PrintGenes(List<GeneContainer> geneContainers, string text)
-        {
-            text += " " + geneContainers.Count + " elements: ";
-            foreach (var genes in geneContainers)
-            {
-                text += "{";
-                foreach (KeyValuePair<string, Gene> entry in genes.Data)
+                // Mutate N/2-1 individuals
+                for (int i = 1; i < populationSize / 2; ++i)
                 {
-                    text += entry.Key.ToString() + ": " + entry.Value.ToString();
+                    population.Add(Mutate(currGene));
                 }
-                text += "} ---- ";
-            }
+                Assert.IsTrue(population.Contains(currGene), "Initial gene has been removed" + Params);
 
-            Debug.Log(text);
+                // CrossOver N/2 individual parents to form another N/2 individual children
+                CrossOver(ref population);
+
+                Assert.AreEqual(populationSize, population.Count, "CrossOver failed, not all individuals were used" + Params);
+                Assert.IsTrue(selectedSize <= population.Count, "Cannot select from a smaller population" + Params);
+                // Select K individuals from the current population
+                Select(ref population, environmentController, aux);
+                Assert.AreEqual(selectedSize, population.Count, "Selection failed, not all individuals were used" + Params);
+
+
+                // CrossOver K individual parent to generate another K children
+                CrossOver(ref population);
+
+                // Select a random individual from the latest population of 2*K individuals
+                int index = Random.Range(0, population.Count - 1);
+
+                adaptedGenes[affectedGene] = population[index];
+            }
+            geneContainer = new GeneContainer(geneContainer, adaptedGenes);
         }
     }
 }

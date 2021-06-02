@@ -4,13 +4,20 @@ using GeneticAlgorithmForSpecies.Structures;
 
 namespace GeneticAlgorithmForSpecies.Environment
 {
+    /// <summary>
+    /// This class manages all bioms
+    /// </summary>
     public class EnvironmentManager : MonoBehaviour
     {
         private static EnvironmentManager _instance;
         public static EnvironmentManager Instance { get => _instance; }
+        
+        public delegate void ChangeEnvironment();
+        public static event ChangeEnvironment OnEnvironmentChange;
 
         [SerializeField] private ValueContainer<Vector3, EnvironmentController> controllers;
         [SerializeField] private readonly float chunkSize = 50;
+        private Vector3? _currEnvPosition = null;
 
         private void Awake()
         {
@@ -47,6 +54,14 @@ namespace GeneticAlgorithmForSpecies.Environment
         public EnvironmentController GetController(Vector3 playerPos)
         {
             Vector3 pos = GetChunkOrigin(playerPos);
+            if (_currEnvPosition == null || _currEnvPosition != playerPos)
+            {
+                if (_currEnvPosition != null)
+                {
+                    OnEnvironmentChange?.Invoke();
+                }
+                _currEnvPosition = playerPos;
+            }
 
             if (controllers.ContainsKey(pos))
                 return controllers[pos];

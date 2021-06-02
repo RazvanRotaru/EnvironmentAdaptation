@@ -4,6 +4,9 @@ using GeneticAlgorithmForSpecies.Structures;
 
 namespace GeneticAlgorithmForSpecies.Environment
 {
+    /// <summary>
+    /// This class describes a biom
+    /// </summary>
     [System.Serializable]
     [CreateAssetMenu(fileName = "New Environment Aspects", menuName = "Environment/Aspects", order = 1)]
     public class EnvironmentAspects : ScriptableObject

@@ -1,10 +1,12 @@
 ﻿using GeneticAlgorithmForSpecies.Genes;
-using System;
-using System.Collections.Generic;
+
 using UnityEngine;
 
 namespace GeneticAlgorithmForSpecies.Equipment
 {
+    /// <summary>
+    /// This class handles the equipment of a character
+    /// </summary>
     class EquipmentController : MonoBehaviour
     {
         [SerializeField] private EquipmentContainer equipmentContainer;
@@ -13,7 +15,11 @@ namespace GeneticAlgorithmForSpecies.Equipment
         {
             if (equipmentContainer == null)
             {
-                equipmentContainer = ScriptableObject.CreateInstance<EquipmentContainer>();
+                equipmentContainer = new EquipmentContainer();
+            }
+            else
+            {
+                equipmentContainer.Init();
             }
         }
 
